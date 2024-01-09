@@ -69,6 +69,8 @@ dst_path = "/opt"
 def init_soft_link(src_path,dst_path):
     soft_link_file = os.path.join(dst_path,"main.log")
     src_file = os.path.join(src_path,"main.log")
+    if os.path.exists(soft_link_file):
+        os.remove(soft_link_file)
     if os.path.islink(soft_link_file) and not os.path.exists(soft_link_file):
         os.unlink(soft_link_file)
 
