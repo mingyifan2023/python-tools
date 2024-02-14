@@ -1,0 +1,22 @@
+你可以使用字典推导式来遍历字典并剔除值为 "None" 的项，然后返回一个新的字典。以下是一个示例代码：
+
+python
+original_dict = {'a': 1, 'b': None, 'c': 3, 'd': None}
+
+new_dict = {key: value for key, value in original_dict.items() if value is not None}
+
+print(new_dict)
+在这个示例中，original_dict 是原始的字典。通过使用字典推导式，我们创建了一个新的字典 new_dict，其中排除了原始字典中值为 "None" 的项。
+
+你可以使用列表推导式和字典推导式结合的方式来处理这个需求。下面是一个示例代码：
+
+python
+list_of_dicts = [
+    {'a': 1, 'b': None, 'c': 3, 'd': None},
+    {'x': None, 'y': 2, 'z': None}
+]
+
+new_list = [{key: value for key, value in my_dict.items() if value is not None} for my_dict in list_of_dicts]
+
+print(new_list)
+在这个示例中，我们遍历了包含多个字典的列表 list_of_dicts，并使用列表推导式和字典推导式来剔除每个字典中值为 "None" 的项，然后返回一个新的列表 new_list。
