@@ -9,9 +9,14 @@
 如果你希望函数的参数是可变的，可以使用*args来接收不定数量的参数。以下是一个修改后的示例代码：
 
 python
-def common_item(self, *lists):
-    # 使用集合的交集操作找到所有列表的共同元素
-    common_elements = set(lists[0]).intersection(*lists)
+如果希望使用*args来接收不定数量的列表参数，可以通过以下方式实现：
+
+python
+def common_item(*args):
+    if len(args) < 2:
+        return "至少需要提供两个列表作为参数"
+    
+    common_elements = set(args[0]).intersection(*args)
     return list(common_elements)
 
 # 示例调用
@@ -21,4 +26,4 @@ list3 = [5, 6, 7, 8, 9]
 
 result = common_item(list1, list2, list3)
 print(result)  # 输出 [5]
-在这个修改后的示例中，函数common_item的参数现在是*lists，它可以接收不定数量的参数。在函数内部，我们使用set(lists[0]).intersection(*lists)来找到所有列表的共同元素。最后返回共同元素的列表形式。
+在这个示例中，函数common_item使用*args来接收不定数量的列表参数。然后使用列表解析式set(args[0]).intersection(*args)来找到这些列表的共同元素，并返回共同元素的列表形式。
