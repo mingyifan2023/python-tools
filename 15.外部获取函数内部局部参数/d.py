@@ -171,3 +171,146 @@ if __name__ == '__main__':
     unittest.main()
 
 
+import unittest
+
+
+# 导入装饰器函数
+
+import functools
+import sys
+def abc():
+    print("start  ")
+    ret = 0
+
+
+
+    print("test------- 1 ")
+
+    ret = 2
+    ret = 2
+    ret = 99
+
+    print("end ")
+def capture_local_vars(func):
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        # 创建一个空字典用于存储局部变量的值
+        local_var_values = {}
+
+        # 定义一个新的trace函数，用于在函数执行时捕获局部变量的值
+        def trace(frame, event, arg):
+            if event == 'return':
+                # 获取局部变量并存储在字典中
+                local_var_values.update(frame.f_locals)
+            return trace
+
+        # 设置trace函数来跟踪函数执行
+        sys.settrace(trace)
+
+        try:
+            # 调用原始函数
+            result = func(*args, **kwargs)
+        finally:
+            # 恢复trace为None
+            sys.settrace(None)
+
+        # 返回函数执行的结果和捕获的局部变量值
+        return result, local_var_values
+
+    return wrapper
+
+class TestABCFunction(unittest.TestCase):
+    def test_ret_value(self):
+
+        _, local_var_values = self._modified_action(abc)
+
+        print("local_var_values", local_var_values)
+
+    # 在测试用例中使用装饰器捕获局部变量值
+        # @capture_local_vars
+        # def modified_action():
+        #     # 调用原始的 abc 函数
+        #     result = abc()
+        #     # 返回捕获的局部变量值
+        #     return result
+        #
+        # # 调用修改后的函数获取结果和局部变量值
+        # _, local_var_values = modified_action()
+        #
+        #
+        #
+        # print("local_var_values",local_var_values)
+
+    @capture_local_vars
+    def _modified_action(selff,func, *args,**kwargs):
+        # 调用传入的函数，并获取结果
+        result = func(*args, **kwargs)
+        # 直接返回函数执行的结果
+        return result
+
+        # # 调用修改后的函数获取结果和局部变量值
+        #
+        # _, local_var_values = self._modified_action()
+        #
+        # print("local_var_values", local_var_values)
+
+
+
+
+
+if __name__ == '__main__':
+    unittest.main()
+
+要将装饰器整合到_modified_action函数内部，您可以在_modified_action函数内部定义一个新的装饰器函数，并直接应用它。以下是修改后的代码：
+
+python
+import functools
+import sys
+
+def _modified_action(selff, func, *args, **kwargs):
+    def capture_local_vars(func):
+        @functools.wraps(func)
+        def wrapper(*args, **kwargs):
+            local_var_values = {}
+
+            def trace(frame, event, arg):
+                if event == 'return':
+                    local_var_values.update(frame.f_locals)
+                return trace
+
+            sys.settrace(trace)
+
+            try:
+                result = func(*args, **kwargs)
+            finally:
+                sys.settrace(None)
+            return result, local_var_values
+        
+        return wrapper
+
+    @capture_local_vars
+    def inner_function(*args, **kwargs):
+        return func(*args, **kwargs)
+
+    # Call the decorated function and return its result.
+    return inner_function(*args, **kwargs)
+
+# Example usage of the modified function with a sample function to decorate.
+def sample_function(x, y):
+    z = x + y
+    return z
+
+# Assuming that `selff` is an instance of a class, this example shows how you would call `_modified_action`.
+
+# Create an instance of a class (dummy for illustration purposes).
+class MyClass:
+    pass
+
+self_instance = MyClass()
+
+# Call the modified action function, passing in the sample function and arguments.
+result, locals_capture = _modified_action(self_instance, sample_function, 2, 3)
+
+print("Result of the function:", result)
+print("Local variables captured:", locals_capture)
+
