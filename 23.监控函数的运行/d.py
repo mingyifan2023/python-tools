@@ -131,3 +131,30 @@ sys.settrace(None)
 
 print(local_var_values)
 
+
+
+import sys
+
+local_var_values = {}  # 全局变量local_
+# 设置追踪函数
+def trace(frame, event, arg):
+    global local_var_values
+    if event == 'return':
+        local_var_values.update(frame.f_locals)
+
+    return trace
+
+sys.settrace(trace)
+
+
+
+def abc(ab):
+    a = 2
+#函数执行
+abc("1")
+# 结束追踪函数
+sys.settrace(None)
+
+print(local_var_values)
+
+
